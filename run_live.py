@@ -24,7 +24,6 @@ def fetch_gold_data():
             # Single level columns
             gold.columns = [col.lower() for col in gold.columns]
         
-        print(f"Final columns: {list(gold.columns)}")
         return gold
     except Exception as e:
         print(f"❌ Error: {e}")
@@ -40,16 +39,11 @@ def analyze():
         return
     
     try:
-        print(f"Data shape: {data.shape}")
-        print(f"Columns: {list(data.columns)}")
-        
         # Initialize indicator with data
         indicator = GoldIndicators(data)
-        print("✅ Indicator initialized")
         
         # Generate report
         report = indicator.generate_trading_report()
-        print("✅ Report generated")
         
         # Print results
         print("\n" + "=" * 60)
@@ -61,9 +55,11 @@ def analyze():
         
         print(f"\n📈 Supply & Demand Levels:")
         if report['supply_levels']:
-            print(f"   Supply: {report['supply_levels']}")
+            supply_str = ", ".join([f"${float(x):.2f}" for x in report['supply_levels']])
+            print(f"   Supply: {supply_str}")
         if report['demand_levels']:
-            print(f"   Demand: {report['demand_levels']}")
+            demand_str = ", ".join([f"${float(x):.2f}" for x in report['demand_levels']])
+            print(f"   Demand: {demand_str}")
         
         print(f"\n📊 Technical Indicators:")
         print(f"   RSI: {report['rsi']}")
