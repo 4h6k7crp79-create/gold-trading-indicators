@@ -34,8 +34,8 @@ def analyze():
         'volume': data['Volume'].values
     }
     
-    # Run indicator
-    indicator = GoldIndicators()
+    # Run indicator - pass data to constructor
+    indicator = GoldIndicators(bars)
     result = indicator.analyze(bars)
     
     # Print results
@@ -48,6 +48,7 @@ def analyze():
     print(f"\nSignal: {result.get('signal', 'HOLD')}")
     print(f"Strength: {result.get('strength', 'N/A')}")
     print("=" * 60)
+    print("\n✅ Analysis complete!")
 
 if __name__ == "__main__":
     try:
@@ -57,4 +58,6 @@ if __name__ == "__main__":
         sys.exit(0)
     except Exception as e:
         print(f"Error: {e}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
