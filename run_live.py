@@ -5,6 +5,7 @@ Fetches real gold prices and shows buy/sell signals
 """
 
 import sys
+import pandas as pd
 import yfinance as yf
 from gold_indicators import GoldIndicators
 
@@ -25,30 +26,38 @@ def analyze():
     if data is None:
         return
     
-    # Prepare data for indicator
-    bars = {
-        'open': data['Open'].values,
-        'high': data['High'].values,
-        'low': data['Low'].values,
-        'close': data['Close'].values,
-        'volume': data['Volume'].values
-    }
+    # Rename columns to lowercase for compatibility
+    data.columns = [col.lower() for col in data.columns]
     
-    # Run indicator - pass data to constructor
-    indicator = GoldIndicators(bars)
-    result = indicator.analyze(bars)
+    # Run indicator - pass DataFrame directly
+    indicator = GoldIndicators(data)
+    report = indicator.generate_trading_report()
     
     # Print results
     print("=" * 60)
     print("🏆 GOLD TRADING ANALYSIS")
     print("=" * 60)
-    print(f"Current Price: ${bars['close'][-1]:.2f}")
-    print(f"High (2mo): ${bars['high'].max():.2f}")
-    print(f"Low (2mo): ${bars['low'].min():.2f}")
-    print(f"\nSignal: {result.get('signal', 'HOLD')}")
-    print(f"Strength: {result.get('strength', 'N/A')}")
+    print(f"Current Price: ${report['current_price']}")
+    print(f"Resistance: ${report['resistance']}")
+    print(f"Support: ${report['support']}")
+    
+    print(f"\n📈 Supply & Demand Levels:")
+    if report['supply_levels']:
+        print(f"   Supply: {report['supply_levels']}")
+    if report['demand_levels']:
+        print(f"   Demand: {report['demand_levels']}")
+    
+    print(f"\n📊 Technical Indicators:")
+    print(f"   RSI: {report['rsi']}")
+    print(f"   MACD: {report['macd']}")
+    print(f"   Trend: {report['trend']}")
+    
+    print(f"\n💡 Latest Signal: {report['last_signal']}")
+    print(f"   Buy Signals (Total): {report['buy_signals_count']}")
+    print(f"   Sell Signals (Total): {report['sell_signals_count']}")
+    
     print("=" * 60)
-    print("\n✅ Analysis complete!")
+    print("✅ Analysis complete!")
 
 if __name__ == "__main__":
     try:
