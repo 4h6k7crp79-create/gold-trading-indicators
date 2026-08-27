@@ -55,16 +55,16 @@ class GoldIndicators:
     
     def calculate_rsi(self, period: int = 14) -> pd.Series:
         """Calculate Relative Strength Index"""
-        return ta.momentum.rsi(self.data['close'], length=period)
+        return ta.momentum.rsi(self.data['close'], timeperiod=period)
     
     def calculate_macd(self, fast: int = 12, slow: int = 26, signal: int = 9) -> Tuple[pd.Series, pd.Series, pd.Series]:
         """Calculate MACD indicators"""
-        macd = ta.trend.macd(self.data['close'], fast=fast, slow=slow, signal=signal)
+        macd = ta.trend.macd(self.data['close'], fastperiod=fast, slowperiod=slow, signalperiod=signal)
         return macd.iloc[:, 0], macd.iloc[:, 1], macd.iloc[:, 2]
     
     def calculate_bollinger_bands(self, period: int = 20, std_dev: float = 2.0) -> Tuple[pd.Series, pd.Series, pd.Series]:
         """Calculate Bollinger Bands"""
-        bb = ta.volatility.bollinger_bands(self.data['close'], length=period, std=std_dev)
+        bb = ta.volatility.bollinger_bands(self.data['close'], timeperiod=period, nbdevup=std_dev, nbdevdn=std_dev)
         return bb.iloc[:, 0], bb.iloc[:, 1], bb.iloc[:, 2]  # upper, middle, lower
     
     def identify_breakout_levels(self, period: int = 10) -> Tuple[float, float]:
