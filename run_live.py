@@ -16,11 +16,20 @@ def fetch_gold_data():
         gold = yf.download("GC=F", period="2mo", interval="1h", progress=False)
         print(f"✅ Fetched {len(gold)} candles\n")
         
-        # Ensure columns are lowercase
-        gold.columns = [col.lower() for col in gold.columns]
+        # Handle MultiIndex columns from yfinance
+        if isinstance(gold.columns, pd.MultiIndex):
+            # Flatten MultiIndex to single level
+            gold.columns = [col[0].lower() for col in gold.columns]
+        else:
+            # Single level columns
+            gold.columns = [col.lower() for col in gold.columns]
+        
+        print(f"Final columns: {list(gold.columns)}")
         return gold
     except Exception as e:
         print(f"❌ Error: {e}")
+        import traceback
+        traceback.print_exc()
         return None
 
 def analyze():
